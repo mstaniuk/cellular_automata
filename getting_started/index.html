@@ -12,21 +12,94 @@
 
     body {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: flex-start;
       align-items: center;
     }
 
-    canvas {
-      display: block;
+    .world {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+    .cell {
+      width: 10px;
+      height: 10px;
+    }
+    .cell--alive {
+      background: #222222;
     }
   </style>
 </head>
 <body>
-
-<canvas id="canvas"></canvas>
+<!--
+  This place maintain simple examples of cellular automation
+  there world is simple 1D Array of cells with binary state.
+-->
+<button id="nextTick">Next Step</button>
+<div id="canvas"></div>
 
 <script>
+  // Main module
+  (function() {
+    const canvas = document.getElementById('canvas');
+    const nextTickButton = document.getElementById('nextTick');
 
+    // Simple 1D world containing binary cells
+    // Starting with only central cell being alive
+    let world = [0, 0, 0, 0, 1, 0, 0, 0, 0];
+
+    // Since we want to show historical elements as Y axis we need to have
+    // a place to store our timeline
+    // const timeline = [];
+    // But we'll use HTML as out history handles
+
+    // What to do on on on next step
+    function tick() {
+      // Push 'old' world to timeline stack
+      // timeline.push(world);
+
+      // Compute next world stat
+      world = computeNextStep();
+
+      // Render all;
+      render();
+    }
+
+    function render() {
+      // Create wrapper for cells
+      const row = document.createElement('div');
+      row.className = 'world';
+
+      // For each cell in world render one cell as div
+      world.forEach(cellState => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+
+        // Add styling for alive cell
+        if (cellState) {
+          cell.classList.add('cell--alive');
+        }
+        row.appendChild(cell);
+      });
+
+      canvas.appendChild(row);
+    }
+
+    function computeNextStep() {
+      // Do some stuff with world
+
+      return world;
+    }
+
+    nextTickButton.addEventListener('click', function() {
+      tick();
+    });
+
+    // Show initial state on app start
+    tick();
+
+  }());
 </script>
 </body>
 </html>
