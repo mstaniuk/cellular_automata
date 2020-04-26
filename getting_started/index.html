@@ -57,7 +57,8 @@
     let animationId = null;
     // Simple 1D world containing binary cells
     // Starting with only central cell being alive
-    let world = [0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 1,0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0];
+    let world = new Array(101).fill(0);
+    world[Math.floor((world.length - 1) / 2)] = 1;
 
     // Since we want to show historical elements as Y axis we need to have
     // a place to store our timeline
@@ -117,16 +118,15 @@
         ];
 
         // Rules
-        // 1. Fun one - loops just after 5
-        // if surrounded by alive - die or remain dead
-        if (neighbours[0] && neighbours[2]) return 0; // I know that may be simplified but will make less obvious
-
-        // if surrounded by dead die or born
-        if (!neighbours[0] && !neighbours[2]) return !neighbours[1];
-
-        // Else remain as is
-        return neighbours[1];
-
+        // 1. trójkąt sierpińskiego
+        if(neighbours[0] && neighbours[1] && neighbours[2]) return 0
+        if(neighbours[0] && neighbours[1] && !neighbours[2]) return 1
+        if(neighbours[0] && !neighbours[1] && neighbours[2]) return 0
+        if(neighbours[0] && !neighbours[1] && !neighbours[2]) return 1
+        if(!neighbours[0] && neighbours[1] && neighbours[2]) return 1
+        if(!neighbours[0] && neighbours[1] && !neighbours[2]) return 0
+        if(!neighbours[0] && !neighbours[1] && neighbours[2]) return 1
+        if(!neighbours[0] && !neighbours[1] && !neighbours[2]) return 0
       });
     }
 
