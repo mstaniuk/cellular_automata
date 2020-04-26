@@ -37,14 +37,16 @@
   there world is simple 1D Array of cells with binary state.
 -->
 <button id="nextTick">Next Step</button>
+<button id="animate">Start/Stop Steps Animation</button>
 <div id="canvas"></div>
 
 <script>
   // Main module
   (function() {
     const canvas = document.getElementById('canvas');
+    const animationButton = document.getElementById('animate');
     const nextTickButton = document.getElementById('nextTick');
-
+    let animationId = null;
     // Simple 1D world containing binary cells
     // Starting with only central cell being alive
     let world = [0, 0, 0, 0, 1, 0, 0, 0, 0];
@@ -56,14 +58,14 @@
 
     // What to do on on on next step
     function tick() {
+      // Render old world
+      render();
+
       // Push 'old' world to timeline stack
       // timeline.push(world);
 
       // Compute next world stat
       world = computeNextStep();
-
-      // Render all;
-      render();
     }
 
     function render() {
@@ -87,10 +89,21 @@
     }
 
     function computeNextStep() {
-      // Do some stuff with world
-
-      return world;
+      // Just alter last state, nothing special
+      return world.map(cell => !cell);
     }
+
+    animationButton.addEventListener('click', function() {
+      if(animationId) {
+        window.clearInterval(animationId);
+        animationId = null;
+      } else {
+        animationId = window.setInterval(function() {
+          tick();
+        }, 100);
+      }
+
+    });
 
     nextTickButton.addEventListener('click', function() {
       tick();
