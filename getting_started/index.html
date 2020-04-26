@@ -29,6 +29,14 @@
     .cell--alive {
       background: #222222;
     }
+
+    .number {
+      width: 10px;
+      text-align: center;
+      font-size: 8px;
+      color: #444444;
+      font-family: monospace, monospace;
+    }
   </style>
 </head>
 <body>
@@ -49,29 +57,34 @@
     let animationId = null;
     // Simple 1D world containing binary cells
     // Starting with only central cell being alive
-    let world = [0, 0, 0, 0, 1, 0, 0, 0, 0];
+    let world = [0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 1,0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0];
 
     // Since we want to show historical elements as Y axis we need to have
     // a place to store our timeline
-    // const timeline = [];
-    // But we'll use HTML as out history handles
+    const timeline = [];
 
     // What to do on on on next step
     function tick() {
-      // Render old world
-      render();
-
       // Push 'old' world to timeline stack
-      // timeline.push(world);
+      const iterationNumber = timeline.push(world);
+
+      // Render old world
+      render(iterationNumber);
 
       // Compute next world stat
       world = computeNextStep();
     }
 
-    function render() {
+    function render(iterationNumber) {
       // Create wrapper for cells
       const row = document.createElement('div');
       row.className = 'world';
+
+      // Create step number wrapper
+      const stepNumber = document.createElement('div');
+      stepNumber.className = 'number';
+      stepNumber.innerText = iterationNumber;
+      row.appendChild(stepNumber);
 
       // For each cell in world render one cell as div
       world.forEach(cellState => {
@@ -89,8 +102,32 @@
     }
 
     function computeNextStep() {
+      const lastWorld = timeline[timeline.length - 1];
       // Just alter last state, nothing special
-      return world.map(cell => !cell);
+      return world.map((cell, index) => {
+        // Very simple memory validation check
+        // Meaning that last and first cell will remain static
+        if(index <= 0 || index >= world.length) return cell;
+
+        // Save neighbours to do some more complex cell lifecycle
+        const neighbours = [
+          lastWorld[index - 1],
+          lastWorld[index],
+          lastWorld[index + 1]
+        ];
+
+        // Rules
+        // 1. Fun one - loops just after 5
+        // if surrounded by alive - die or remain dead
+        if (neighbours[0] && neighbours[2]) return 0; // I know that may be simplified but will make less obvious
+
+        // if surrounded by dead die or born
+        if (!neighbours[0] && !neighbours[2]) return !neighbours[1];
+
+        // Else remain as is
+        return neighbours[1];
+
+      });
     }
 
     animationButton.addEventListener('click', function() {
