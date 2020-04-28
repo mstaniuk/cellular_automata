@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .world {
+      display: block;
+    }
+
+    .row {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+    .cell {
+      width: 2px;
+      height: 2px;
+    }
+    .cell--alive {
+      background: #222222;
+    }
+  </style>
+</head>
+<body>
+<!--
+  This place maintain simple examples of cellular automation
+  there world is simple 2D Array of cells with binary state.
+-->
+<button id="nextTick">Next Step</button>
+<button id="animate">Start/Stop Steps Animation</button>
+<div id="canvas"></div>
+
+<script>
+  // Main module
+  (function() {
+    const canvas = document.getElementById('canvas');
+    const animationButton = document.getElementById('animate');
+    const nextTickButton = document.getElementById('nextTick');
+    let animationId = null;
+    // Simple 1D world containing binary cells
+    // Starting with only central cell being alive
+    const N = 201;
+    let world = (new Array(N).fill(0)).map(e => new Array(N).fill(0))
+    for ( let x = 1; x < N - 1; x ++) {
+      for ( let y = 1; y < N - 1; y ++) {
+        world[x][y] = Math.random() > 0.95 ? 1 : 0;
+      }
+    }
+
+
+    // Since we want to show historical elements as Y axis we need to have
+    // a place to store our timeline
+    const timeline = [];
+
+    // What to do on on on next step
+    function tick() {
+      // Push 'old' world to timeline stack
+      timeline.push(world);
+
+      // Render old world
+      render();
+
+      // Compute next world stat
+      world = computeNextStep();
+    }
+
+    function render() {
+      // Create wrapper for cells
+      const worldWrappers = document.createElement('div');
+      worldWrappers.className = 'world';
+
+      // render world grid
+      world.forEach(rowElements => {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        rowElements.forEach(cellState => {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+
+          if (cellState) {
+            cell.classList.add('cell--alive');
+          }
+
+          row.appendChild(cell);
+        });
+
+        worldWrappers.appendChild(row);
+      });
+
+      canvas.innerHTML = '';
+      canvas.appendChild(worldWrappers);
+    }
+
+    function computeNextStep() {
+      const lastWorld = timeline[timeline.length - 1];
+      // Just alter last state, nothing special
+      return world.map((row, x) => {
+        return row.map((cell, y) => {
+          // Very simple memory validation check
+          // Meaning that last and first cell will remain static
+          if (
+            x <= 0 ||
+            x >= N - 1 ||
+            y <= 0 ||
+            y >= N - 1
+          ) return cell;
+
+          // Save neighbours to do some more complex cell lifecycle
+          const neighbours = [
+            lastWorld[x - 1][y - 1],
+            lastWorld[x][y - 1],
+            lastWorld[x + 1][y - 1],
+
+            lastWorld[x - 1][y],
+            lastWorld[x + 1][y],
+
+            lastWorld[x - 1][y + 1],
+            lastWorld[x][y + 1],
+            lastWorld[x + 1][y + 1],
+          ];
+
+          const liveNeighbours = neighbours.reduce((a,b) => a + b, 0);
+          const deadNeighbours = neighbours.length - liveNeighbours;
+
+
+          // Rules
+          // 1. Game of life
+          if ( cell && liveNeighbours < 2 ) return 0;
+          if ( cell && liveNeighbours >= 2 && liveNeighbours <= 3) return 1;
+          if ( cell && liveNeighbours > 3 ) return 0;
+          if ( !cell && liveNeighbours === 3 ) return 1;
+
+          return cell;
+        });
+      });
+    }
+
+    animationButton.addEventListener('click', function() {
+      if(animationId) {
+        window.clearInterval(animationId);
+        animationId = null;
+      } else {
+        animationId = window.setInterval(function() {
+          tick();
+        }, 100);
+      }
+
+    });
+
+    nextTickButton.addEventListener('click', function() {
+      tick();
+    });
+
+    // Show initial state on app start
+    tick();
+
+  }());
+</script>
+</body>
+</html>
