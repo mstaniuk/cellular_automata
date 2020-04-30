@@ -32,20 +32,26 @@
     let lastTime = 0;
     let deltaTime = 0;
     let timePassed = 0;
-    const timePerFrame = 100;
-    const CELL_SIZE = 2;
-    const WORLD_SIZE = 400;
+    const timePerFrame = 0;
+    const CELL_SIZE = 1;
+    const WORLD_SIZE = 800;
     const toggleButton = document.getElementById('toggle');
     const canvas = document.getElementById('canvas');
     canvas.width = WORLD_SIZE*CELL_SIZE;
     canvas.height = WORLD_SIZE*CELL_SIZE;
     const ctx = canvas.getContext('2d');
-    let world = (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0));
-    let lastWorld = [];
+    const pages = [
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
+    ];
+
+    let currentPage = 0;
 
     for(let x = 0; x < WORLD_SIZE; x++) {
       for(let y = 0; y < WORLD_SIZE; y++) {
-        world[x][y] = Math.random() > 0.6 ? 1 : 0;
+        const val = Math.random() > 0.6 ? 1 : 0;
+        pages[0][x][y] = val;
+        pages[1][x][y] = val;
       }
     }
 
@@ -58,68 +64,60 @@
         return;
       }
       timePassed = 0;
-      lastWorld = world;
-      world = [];
+
+      currentPage = currentPage === 0 ? 1 : 0;
+      const lastPage = currentPage === 0 ? 1 : 0;
 
       for(let x = 0; x < WORLD_SIZE; x++) {
-        world[x] = [];
-
         for(let y = 0; y < WORLD_SIZE; y++) {
-          const cell = lastWorld[x][y];
-          if (
-            x <= 0 ||
-            x >= WORLD_SIZE - 1 ||
-            y <= 0 ||
-            y >= WORLD_SIZE - 1
-          ) {
-            world[x][y] = 0;
-            continue;
+          const cell = pages[lastPage][x][y];
+          const directions = {
+            north: y <= 0 ? WORLD_SIZE - 1 : y - 1,
+            south: y >= WORLD_SIZE - 1 ? 0 : y + 1,
+            west: x <= 0 ? WORLD_SIZE - 1 : x - 1,
+            east: x >= WORLD_SIZE - 1 ? 0 : x + 1,
           }
 
-          const neighbours = [
-            lastWorld[x - 1][y - 1],
-            lastWorld[x][y - 1],
-            lastWorld[x + 1][y - 1],
-            lastWorld[x - 1][y],
-            lastWorld[x + 1][y],
-            lastWorld[x - 1][y + 1],
-            lastWorld[x][y + 1],
-            lastWorld[x + 1][y + 1],
-          ];
-
-          const liveNeighbours = neighbours.reduce((a,b) => a + b, 0);
+          // Save neighbours to do some more complex cell lifecycle
+          const liveNeighbours =
+            pages[lastPage][directions.west][directions.north] +
+            pages[lastPage][x][directions.north] +
+            pages[lastPage][directions.east][directions.north] +
+            pages[lastPage][directions.west][y] +
+            pages[lastPage][directions.east][y] +
+            pages[lastPage][directions.west][directions.south] +
+            pages[lastPage][x][directions.south] +
+            pages[lastPage][directions.east][directions.south];
 
           if ( cell && liveNeighbours < 2 ) {
-            world[x][y] = 0;
+            pages[currentPage][x][y] = 0;
             continue;
           }
 
           if ( cell && liveNeighbours >= 2 && liveNeighbours <= 3) {
-            world[x][y] = 1;
+            pages[currentPage][x][y] = 1;
             continue;
           }
           if ( cell && liveNeighbours > 3 ) {
-            world[x][y] = 0;
+            pages[currentPage][x][y] = 0;
             continue;
           }
 
           if ( !cell && liveNeighbours === 3 ){
-            world[x][y] = 1;
+            pages[currentPage][x][y] = 1;
             continue;
           }
 
-          world[x][y] = cell;
+          pages[currentPage][x][y] = cell;
         }
       }
     }
 
     function render() {
-      // Log dt and fps
-      // console.log(deltaTime, 1/deltaTime * 1000);
       ctx.clearRect(0, 0, WORLD_SIZE*CELL_SIZE, WORLD_SIZE*CELL_SIZE);
       for(let x = 0; x < WORLD_SIZE; x++) {
         for(let y = 0; y < WORLD_SIZE; y++) {
-          if (world[x][y]) {
+          if (pages[currentPage][x][y]) {
             ctx.fillRect(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE);
           }
         }
