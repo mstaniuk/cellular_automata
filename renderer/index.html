@@ -42,6 +42,14 @@
     const ctx = canvas.getContext('2d');
     let shouldRender = false;
 
+    function countCharOccurrences(str, char) {
+      let ctr = 0;
+      for(let i = 0; i < str.length; i++) {
+        if(str.charAt(i) === char) ctr++;
+      }
+      return ctr;
+    }
+
     function generateLookupTable() {
       /*
         ## Key structure:
@@ -61,11 +69,45 @@
         y = [0, 1]
         x = [0, 1]
       */
+      const lot = {};
+      const numberOfNeighboursStates = 0b11111111;
+
+      for( let y = 0; y <= 1; y++) {
+        for (let x = 0; x <= numberOfNeighboursStates; x++) {
+          const liveNeighbours = countCharOccurrences(x.toString(2), '1');
+          let val = y;
+
+          if ( y && liveNeighbours < 2 ) {
+            lot[y + x.toString(2).padStart(8, '0')] = 0;
+            continue;
+          }
+
+          if ( y && liveNeighbours >= 2 && liveNeighbours <= 3) {
+            lot[y + x.toString(2).padStart(8, '0')] = 1;
+            continue;
+          }
+          if ( y && liveNeighbours > 3 ) {
+            lot[y + x.toString(2).padStart(8, '0')] = 0;
+            continue;
+          }
+
+          if ( !y && liveNeighbours === 3 ) {
+            lot[y + x.toString(2).padStart(8, '0')] = 1;
+            continue;
+          }
+
+          lot[y + x.toString(2).padStart(8, '0')] = val;
+        }
+      }
+
+      return lot;
     }
 
+    const LOT = generateLookupTable();
+
     const pages = [
-      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(false)),
-      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(false)),
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
     ];
     let renderableCells = [];
 
@@ -106,8 +148,9 @@
             east: x >= WORLD_SIZE - 1 ? 0 : x + 1,
           }
 
-          // Save neighbours to do some more complex cell lifecycle
-          const liveNeighbours =
+          const lotKey =
+            '' +
+            cell +
             pages[lastPage][directions.west][directions.north] +
             pages[lastPage][x][directions.north] +
             pages[lastPage][directions.east][directions.north] +
@@ -117,32 +160,9 @@
             pages[lastPage][x][directions.south] +
             pages[lastPage][directions.east][directions.south];
 
-          if ( cell && liveNeighbours < 2 ) {
-            pages[currentPage][x][y] = false;
-            continue;
-          }
-
-          if ( cell && liveNeighbours >= 2 && liveNeighbours <= 3) {
-            pages[currentPage][x][y] = true;
-            renderableCells.push([x, y]);
-            continue;
-          }
-          if ( cell && liveNeighbours > 3 ) {
-            pages[currentPage][x][y] = false;
-            continue;
-          }
-
-          if ( !cell && liveNeighbours === 3 ) {
-            pages[currentPage][x][y] = true;
-            renderableCells.push([x, y]);
-            continue;
-          }
-
-          if(cell) {
-            renderableCells.push([x, y]);
-          }
-
-          pages[currentPage][x][y] = cell;
+          const nextState = LOT[lotKey];
+          pages[currentPage][x][y] = nextState;
+          if(nextState) renderableCells.push([x, y]);
         }
       }
     }
