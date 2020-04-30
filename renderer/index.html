@@ -40,10 +40,34 @@
     canvas.width = WORLD_SIZE*CELL_SIZE;
     canvas.height = WORLD_SIZE*CELL_SIZE;
     const ctx = canvas.getContext('2d');
+    let shouldRender = false;
+
+    function generateLookupTable() {
+      /*
+        ## Key structure:
+
+        ### Schema
+        yxxxxxxxx
+
+        ### Definition
+        y - state of current cell
+        x - state of neighbour
+
+        ### Positions
+        x  x  x  x  x  x  x  x
+        NW N  NE W  E  SW S  SE
+
+        ## Values
+        y = [0, 1]
+        x = [0, 1]
+      */
+    }
+
     const pages = [
-      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
-      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(false)),
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(false)),
     ];
+    let changedCells = [];
 
     let currentPage = 0;
 
@@ -52,6 +76,7 @@
         const val = Math.random() > 0.6 ? 1 : 0;
         pages[0][x][y] = val;
         pages[1][x][y] = val;
+        changedCells.push([x,y]);
       }
     }
 
@@ -61,8 +86,11 @@
       timePassed = timePassed + deltaTime;
 
       if (timePassed < timePerFrame) {
+        shouldRender = false;
         return;
       }
+      changedCells = [];
+      shouldRender = true;
       timePassed = 0;
 
       currentPage = currentPage === 0 ? 1 : 0;
@@ -90,21 +118,24 @@
             pages[lastPage][directions.east][directions.south];
 
           if ( cell && liveNeighbours < 2 ) {
-            pages[currentPage][x][y] = 0;
+            pages[currentPage][x][y] = false;
+            changedCells.push([x, y]);
             continue;
           }
 
           if ( cell && liveNeighbours >= 2 && liveNeighbours <= 3) {
-            pages[currentPage][x][y] = 1;
+            pages[currentPage][x][y] = true;
             continue;
           }
           if ( cell && liveNeighbours > 3 ) {
-            pages[currentPage][x][y] = 0;
+            pages[currentPage][x][y] = false;
+            changedCells.push([x, y]);
             continue;
           }
 
           if ( !cell && liveNeighbours === 3 ){
-            pages[currentPage][x][y] = 1;
+            pages[currentPage][x][y] = true;
+            changedCells.push([x, y]);
             continue;
           }
 
@@ -114,11 +145,13 @@
     }
 
     function render() {
-      ctx.clearRect(0, 0, WORLD_SIZE*CELL_SIZE, WORLD_SIZE*CELL_SIZE);
-      for(let x = 0; x < WORLD_SIZE; x++) {
-        for(let y = 0; y < WORLD_SIZE; y++) {
-          if (pages[currentPage][x][y]) {
-            ctx.fillRect(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      if(shouldRender) {
+        for(const cellCoord of changedCells) {
+          const cell = pages[currentPage][cellCoord[0]][cellCoord[1]];
+          if (cell) {
+            ctx.fillRect(cellCoord[0]*CELL_SIZE, cellCoord[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+          } else {
+            ctx.clearRect(cellCoord[0]*CELL_SIZE, cellCoord[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE);
           }
         }
       }
