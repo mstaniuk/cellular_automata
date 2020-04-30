@@ -55,48 +55,42 @@
         ## Key structure:
 
         ### Schema
-        yxxxxxxxx
+        [y][x]
 
         ### Definition
         y - state of current cell
-        x - state of neighbour
-
-        ### Positions
-        x  x  x  x  x  x  x  x
-        NW N  NE W  E  SW S  SE
-
+        x - number of existing neighbours
         ## Values
         y = [0, 1]
-        x = [0, 1]
+        x = [0, 8]
       */
-      const lot = {};
-      const numberOfNeighboursStates = 0b11111111;
+      const lot = [
+        [],
+        [],
+      ];
 
-      for( let y = 0; y <= 1; y++) {
-        for (let x = 0; x <= numberOfNeighboursStates; x++) {
-          const liveNeighbours = countCharOccurrences(x.toString(2), '1');
-          let val = y;
-
-          if ( y && liveNeighbours < 2 ) {
-            lot[y + x.toString(2).padStart(8, '0')] = 0;
+      for( let cell = 0; cell <= 1; cell++) {
+        for (let liveNeighbours = 0; liveNeighbours <= 8; liveNeighbours++) {
+          if ( cell && liveNeighbours < 2 ) {
+            lot[cell][liveNeighbours] = 0;
             continue;
           }
 
-          if ( y && liveNeighbours >= 2 && liveNeighbours <= 3) {
-            lot[y + x.toString(2).padStart(8, '0')] = 1;
+          if ( cell && liveNeighbours >= 2 && liveNeighbours <= 3) {
+            lot[cell][liveNeighbours] = 1;
             continue;
           }
-          if ( y && liveNeighbours > 3 ) {
-            lot[y + x.toString(2).padStart(8, '0')] = 0;
-            continue;
-          }
-
-          if ( !y && liveNeighbours === 3 ) {
-            lot[y + x.toString(2).padStart(8, '0')] = 1;
+          if ( cell && liveNeighbours > 3 ) {
+            lot[cell][liveNeighbours] = 0;
             continue;
           }
 
-          lot[y + x.toString(2).padStart(8, '0')] = val;
+          if ( !cell && liveNeighbours === 3 ) {
+            lot[cell][liveNeighbours] = 1;
+            continue;
+          }
+
+          lot[cell][liveNeighbours] = cell;
         }
       }
 
@@ -104,6 +98,7 @@
     }
 
     const LOT = generateLookupTable();
+    console.log(LOT);
 
     const pages = [
       (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
@@ -148,9 +143,7 @@
             east: x >= WORLD_SIZE - 1 ? 0 : x + 1,
           }
 
-          const lotKey =
-            '' +
-            cell +
+          const liveNeighbours =
             pages[lastPage][directions.west][directions.north] +
             pages[lastPage][x][directions.north] +
             pages[lastPage][directions.east][directions.north] +
@@ -160,7 +153,7 @@
             pages[lastPage][x][directions.south] +
             pages[lastPage][directions.east][directions.south];
 
-          const nextState = LOT[lotKey];
+          const nextState = LOT[cell][liveNeighbours];
           pages[currentPage][x][y] = nextState;
           if(nextState) renderableCells.push([x, y]);
         }
