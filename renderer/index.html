@@ -67,7 +67,7 @@
       (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(false)),
       (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(false)),
     ];
-    let changedCells = [];
+    let renderableCells = [];
 
     let currentPage = 0;
 
@@ -76,7 +76,7 @@
         const val = Math.random() > 0.6 ? 1 : 0;
         pages[0][x][y] = val;
         pages[1][x][y] = val;
-        changedCells.push([x,y]);
+        renderableCells.push([x,y]);
       }
     }
 
@@ -89,7 +89,7 @@
         shouldRender = false;
         return;
       }
-      changedCells = [];
+      renderableCells = [];
       shouldRender = true;
       timePassed = 0;
 
@@ -119,24 +119,27 @@
 
           if ( cell && liveNeighbours < 2 ) {
             pages[currentPage][x][y] = false;
-            changedCells.push([x, y]);
             continue;
           }
 
           if ( cell && liveNeighbours >= 2 && liveNeighbours <= 3) {
             pages[currentPage][x][y] = true;
+            renderableCells.push([x, y]);
             continue;
           }
           if ( cell && liveNeighbours > 3 ) {
             pages[currentPage][x][y] = false;
-            changedCells.push([x, y]);
             continue;
           }
 
-          if ( !cell && liveNeighbours === 3 ){
+          if ( !cell && liveNeighbours === 3 ) {
             pages[currentPage][x][y] = true;
-            changedCells.push([x, y]);
+            renderableCells.push([x, y]);
             continue;
+          }
+
+          if(cell) {
+            renderableCells.push([x, y]);
           }
 
           pages[currentPage][x][y] = cell;
@@ -146,13 +149,10 @@
 
     function render() {
       if(shouldRender) {
-        for(const cellCoord of changedCells) {
-          const cell = pages[currentPage][cellCoord[0]][cellCoord[1]];
-          if (cell) {
-            ctx.fillRect(cellCoord[0]*CELL_SIZE, cellCoord[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE);
-          } else {
-            ctx.clearRect(cellCoord[0]*CELL_SIZE, cellCoord[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE);
-          }
+        ctx.clearRect(0, 0, WORLD_SIZE*CELL_SIZE, WORLD_SIZE*CELL_SIZE);
+
+        for(let i = 0; i < renderableCells.length; i++) {
+          ctx.fillRect(renderableCells[i][0]*CELL_SIZE, renderableCells[i][1]*CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
       }
     }
