@@ -19,6 +19,12 @@
 
     canvas {
       display: block;
+      image-rendering: optimizeSpeed;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: -o-crisp-edges;
+      image-rendering: pixelated;
+      -ms-interpolation-mode: nearest-neighbor;
     }
   </style>
 </head>
@@ -34,11 +40,13 @@
     let timePassed = 0;
     const timePerFrame = 0;
     const CELL_SIZE = 1;
-    const WORLD_SIZE = 800;
+    const WORLD_SIZE = 1500;
     const toggleButton = document.getElementById('toggle');
     const canvas = document.getElementById('canvas');
-    canvas.width = WORLD_SIZE*CELL_SIZE;
-    canvas.height = WORLD_SIZE*CELL_SIZE;
+    canvas.width = WORLD_SIZE;
+    canvas.height = WORLD_SIZE;
+    canvas.style.width = WORLD_SIZE*CELL_SIZE + 'px';
+    canvas.style.height = WORLD_SIZE*CELL_SIZE + 'px';
     const ctx = canvas.getContext('2d');
     ctx.font = '16px sans-serif';
     let shouldRender = false;
@@ -52,19 +60,6 @@
     }
 
     function generateLookupTable() {
-      /*
-        ## Key structure:
-
-        ### Schema
-        [y][x]
-
-        ### Definition
-        y - state of current cell
-        x - number of existing neighbours
-        ## Values
-        y = [0, 1]
-        x = [0, 8]
-      */
       const lot = [
         [],
         [],
@@ -99,7 +94,6 @@
     }
 
     const LOT = generateLookupTable();
-    console.log(LOT);
 
     const pages = [
       (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill(0)),
@@ -114,7 +108,10 @@
         const val = Math.random() > 0.6 ? 1 : 0;
         pages[0][x][y] = val;
         pages[1][x][y] = val;
-        renderableCells.push([x,y]);
+
+        if(val) {
+          renderableCells.push([x,y]);
+        }
       }
     }
 
@@ -162,11 +159,16 @@
     }
 
     function render() {
-      ctx.clearRect(0, 0, WORLD_SIZE*CELL_SIZE, WORLD_SIZE*CELL_SIZE);
-      ctx.fillText(((1/deltaTime)*1000).toFixed(2), 20, 20);
+      const imageData = new ImageData(WORLD_SIZE, WORLD_SIZE);
+      const data = imageData.data;
+
       for(let i = 0; i < renderableCells.length; i++) {
-        ctx.fillRect(renderableCells[i][0]*CELL_SIZE, renderableCells[i][1]*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        const cellOnImagePosition = ((renderableCells[i][1] * (imageData.width * 4)) + (renderableCells[i][0] * 4));
+        data[cellOnImagePosition + 3] = 100;
       }
+
+      ctx.putImageData(imageData, 0, 0);
+      ctx.fillText(((1/deltaTime) * 1000).toFixed(2), 20, 20);
     }
 
     function tick(timestamp) {
