@@ -51,14 +51,6 @@
     ctx.font = '16px sans-serif';
     let shouldRender = false;
 
-    function countCharOccurrences(str, char) {
-      let ctr = 0;
-      for(let i = 0; i < str.length; i++) {
-        if(str.charAt(i) === char) ctr++;
-      }
-      return ctr;
-    }
-
     function generateLookupTable() {
       const lot = [
         [],
