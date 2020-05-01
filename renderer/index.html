@@ -10,8 +10,13 @@
       padding: 0;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -19,6 +24,7 @@
 
     canvas {
       display: block;
+      flex: 0 0 auto;
       image-rendering: optimizeSpeed;
       image-rendering: -moz-crisp-edges;
       image-rendering: -webkit-optimize-contrast;
@@ -38,15 +44,18 @@
     let lastTime = 0;
     let deltaTime = 0;
     let timePassed = 0;
-    const timePerFrame = 0;
-    const CELL_SIZE = 1;
-    const WORLD_SIZE = 1500;
+    const timePerFrame = 200;
+    const CELL_SIZE = 20;
+    const WORLD_SIZE = 20;
     const toggleButton = document.getElementById('toggle');
     const canvas = document.getElementById('canvas');
     canvas.width = WORLD_SIZE;
     canvas.height = WORLD_SIZE;
     canvas.style.width = WORLD_SIZE*CELL_SIZE + 'px';
     canvas.style.height = WORLD_SIZE*CELL_SIZE + 'px';
+    this.canvas.style.backgroundImage = `repeating-linear-gradient(0deg, transparent 0px, transparent ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE}px), repeating-linear-gradient(-90deg, transparent 0px, transparent ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE}px)`;
+    this.canvas.style.borderRight = '1px solid #ccc';
+    this.canvas.style.borderBottom = '1px solid #ccc';
     const ctx = canvas.getContext('2d');
     ctx.font = '16px sans-serif';
     let shouldRender = false;
@@ -95,16 +104,20 @@
 
     let currentPage = 0;
 
-    for(let x = 0; x < WORLD_SIZE; x++) {
-      for(let y = 0; y < WORLD_SIZE; y++) {
-        const val = Math.random() > 0.6 ? 1 : 0;
-        pages[0][x][y] = val;
-        pages[1][x][y] = val;
+    function onCanvasClick(e) {
+      const {offsetX, offsetY} = e;
+      const x = Math.floor(offsetX / CELL_SIZE);
+      const y = Math.floor(offsetY / CELL_SIZE);
+      pages[currentPage][x][y] = pages[currentPage][x][y] ? 0 : 1;
 
-        if(val) {
-          renderableCells.push([x,y]);
-        }
+      if(pages[currentPage][x][y]) {
+        renderableCells.push([x,y])
+      } else {
+        const currentCellIndex = renderableCells.findIndex(c => c[0] === x && c[1] === y);
+        renderableCells.splice(currentCellIndex, 1);
       }
+
+      render();
     }
 
     function update(timestamp) {
@@ -156,11 +169,13 @@
 
       for(let i = 0; i < renderableCells.length; i++) {
         const cellOnImagePosition = ((renderableCells[i][1] * (imageData.width * 4)) + (renderableCells[i][0] * 4));
-        data[cellOnImagePosition + 3] = 100;
+        data[cellOnImagePosition + 0] = 0;
+        data[cellOnImagePosition + 1] = 0;
+        data[cellOnImagePosition + 2] = 0;
+        data[cellOnImagePosition + 3] = 200;
       }
 
       ctx.putImageData(imageData, 0, 0);
-      ctx.fillText(((1/deltaTime) * 1000).toFixed(2), 20, 20);
     }
 
     function tick(timestamp) {
@@ -179,6 +194,8 @@
       lastTime = performance.now();
       tick(lastTime);
     })
+
+    canvas.addEventListener('click', onCanvasClick);
 
     lastTime = performance.now();
     tick(lastTime);
