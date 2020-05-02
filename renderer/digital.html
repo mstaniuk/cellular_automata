@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    canvas {
+      display: block;
+      flex: 0 0 auto;
+      image-rendering: optimizeSpeed;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: -o-crisp-edges;
+      image-rendering: pixelated;
+      -ms-interpolation-mode: nearest-neighbor;
+    }
+  </style>
+</head>
+<body>
+<button id="toggle">Start/stop</button>
+<canvas id="canvas"></canvas>
+
+<script>
+  ;(function() {
+    let isAnimating = false;
+    let lastTime = 0;
+    let deltaTime = 0;
+    let timePassed = 0;
+    const timePerFrame = 10;
+    const CELL_SIZE = 20;
+    const WORLD_SIZE = 40;
+    const toggleButton = document.getElementById('toggle');
+    const canvas = document.getElementById('canvas');
+    canvas.width = WORLD_SIZE;
+    canvas.height = WORLD_SIZE;
+    canvas.style.width = WORLD_SIZE*CELL_SIZE + 'px';
+    canvas.style.height = WORLD_SIZE*CELL_SIZE + 'px';
+    this.canvas.style.backgroundImage = `repeating-linear-gradient(0deg, transparent 0px, transparent ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE}px), repeating-linear-gradient(-90deg, transparent 0px, transparent ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE - 1}px, #ccc ${CELL_SIZE}px)`;
+    this.canvas.style.borderRight = '1px solid #ccc';
+    this.canvas.style.borderBottom = '1px solid #ccc';
+    const ctx = canvas.getContext('2d');
+    ctx.font = '16px sans-serif';
+    let shouldRender = false;
+    let renderableCells = [];
+    let currentPage = 0;
+
+    const CELL_TYPE = {
+      NULL:   0,
+      STATIC: 1,
+      LINE:   2,
+      NOT:    3,
+      AND:    4,
+      OR:     5,
+    }
+
+    const DIRECTIONS = {
+      NW: 0,
+      N:  1,
+      NE: 2,
+      E:  3,
+      SE: 4,
+      S:  5,
+      SW: 6,
+      W:  7,
+    }
+
+    const pages = [
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill({type: CELL_TYPE.NULL, state: 0})),
+      (new Array(WORLD_SIZE).fill(0)).map(() => new Array(WORLD_SIZE).fill({type: CELL_TYPE.NULL, state: 0})),
+    ];
+
+    for(let page of pages) {
+      let offsetX = 0;
+      let offsetY = 0;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 1};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 1};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      for(let x = 0; x < page.length; x++) {
+        for(let y = 0; y < page.length; y++) {
+          if (page[x][y].type !== CELL_TYPE.NULL) {
+            renderableCells.push([x,y]);
+          }
+        }
+      }
+    }
+
+    function onCanvasClick(e) {
+      const {offsetX, offsetY} = e;
+      const x = Math.floor(offsetX / CELL_SIZE);
+      const y = Math.floor(offsetY / CELL_SIZE);
+      pages[currentPage][x][y].state = pages[currentPage][x][y].state ? 0 : 1;
+
+      if(pages[currentPage][x][y]) {
+        renderableCells.push([x,y])
+      }
+
+      render();
+    }
+
+    function update(timestamp) {
+      deltaTime = timestamp - lastTime;
+      lastTime = timestamp;
+      timePassed = timePassed + deltaTime;
+
+      if (timePassed < timePerFrame) {
+        shouldRender = false;
+        return;
+      }
+      renderableCells = [];
+      shouldRender = true;
+      timePassed = 0;
+
+      currentPage = currentPage === 0 ? 1 : 0;
+      const lastPage = currentPage === 0 ? 1 : 0;
+
+      for(let x = 0; x < WORLD_SIZE; x++) {
+        for(let y = 0; y < WORLD_SIZE; y++) {
+          const cell = pages[lastPage][x][y];
+          const northPos = y <= 0 ? WORLD_SIZE - 1 : y - 1;
+          const southPos = y >= WORLD_SIZE - 1 ? 0 : y + 1;
+          const westPos = x <= 0 ? WORLD_SIZE - 1 : x - 1;
+          const eastPos = x >= WORLD_SIZE - 1 ? 0 : x + 1;
+
+          const neighbours = {
+            [DIRECTIONS.NW]: pages[lastPage][westPos][northPos],
+            [DIRECTIONS.N]:  pages[lastPage][x][northPos],
+            [DIRECTIONS.NE]: pages[lastPage][eastPos][northPos],
+            [DIRECTIONS.E]:  pages[lastPage][eastPos][y],
+            [DIRECTIONS.SE]: pages[lastPage][eastPos][southPos],
+            [DIRECTIONS.S]:  pages[lastPage][x][southPos],
+            [DIRECTIONS.SW]: pages[lastPage][westPos][southPos],
+            [DIRECTIONS.W]:  pages[lastPage][westPos][y]
+          }
+
+          let nextState = 0;
+
+          switch(cell.type) {
+            case CELL_TYPE.NULL:
+              nextState = 0;
+              break;
+            case CELL_TYPE.STATIC:
+              nextState = cell.state;
+              break;
+            case CELL_TYPE.LINE:
+              nextState = neighbours[cell.source].state;
+              break;
+            case CELL_TYPE.NOT:
+              nextState = neighbours[cell.source].state ? 0 : 1;
+              break;
+            case CELL_TYPE.AND:
+              nextState = neighbours[DIRECTIONS.NW].state & neighbours[DIRECTIONS.SW].state;
+              break;
+            case CELL_TYPE.OR:
+              nextState = neighbours[DIRECTIONS.NW].state | neighbours[DIRECTIONS.SW].state;
+              break;
+          }
+
+          pages[currentPage][x][y].state = nextState;
+          if(cell.type !== CELL_TYPE.NULL) renderableCells.push([x, y]);
+        }
+      }
+    }
+
+    function render() {
+      const imageData = new ImageData(WORLD_SIZE, WORLD_SIZE);
+      const data = imageData.data;
+      for(let i = 0; i < renderableCells.length; i++) {
+        const cell = pages[currentPage][renderableCells[i][0]][renderableCells[i][1]];
+        const cellOnImagePosition = ((renderableCells[i][1] * (imageData.width * 4)) + (renderableCells[i][0] * 4));
+        data[cellOnImagePosition + 0] = cell.state ? 155 : 0;
+        data[cellOnImagePosition + 1] = cell.type === CELL_TYPE.STATIC ? 155 : 0;
+        data[cellOnImagePosition + 2] = cell.type !== CELL_TYPE.LINE && cell.type !== CELL_TYPE.STATIC ? 155 : 0;
+        data[cellOnImagePosition + 3] = 200;
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    function tick(timestamp) {
+      update(timestamp);
+      render();
+
+      window.requestAnimationFrame((ts) => {
+        if(isAnimating) {
+          tick(ts);
+        }
+      });
+    }
+
+    toggleButton.addEventListener('click', () => {
+      isAnimating = !isAnimating;
+      lastTime = performance.now();
+      tick(lastTime);
+    })
+
+    canvas.addEventListener('click', onCanvasClick);
+
+    lastTime = performance.now();
+    tick(lastTime);
+
+  }())
+</script>
+</body>
+</html>
