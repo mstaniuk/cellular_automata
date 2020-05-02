@@ -45,8 +45,8 @@
     let deltaTime = 0;
     let timePassed = 0;
     const timePerFrame = 10;
-    const CELL_SIZE = 20;
-    const WORLD_SIZE = 40;
+    const CELL_SIZE = 10;
+    const WORLD_SIZE = 120;
     const toggleButton = document.getElementById('toggle');
     const canvas = document.getElementById('canvas');
     canvas.width = WORLD_SIZE;
@@ -90,8 +90,10 @@
     for(let page of pages) {
       let offsetX = 0;
       let offsetY = 0;
+
+      // HALF ADDER
       // First line
-      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 1};
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
       page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
       page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
       page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
@@ -103,7 +105,78 @@
       page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
 
       // Second line
-      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 1};
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[16+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[17+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[18+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[19+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[20+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[21+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[22+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[23+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[24+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[25+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      // END OF HALF ADDER
+
+      // JOIN HALF ADDER TO FULL ADDER
+
+      page[9+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[9+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 8;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
       page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
       page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
       page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
@@ -132,6 +205,912 @@
 
       page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
       page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // JOIN TWO FULL ADDERS
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[10+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[9+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[8+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[7+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[6+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[5+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[4+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[3+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[2+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[0+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][11+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][12+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][13+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][14+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 20;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // JOIN TWO FULL ADDERS
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[10+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[9+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[8+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[7+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[6+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[5+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[4+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[3+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[2+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[0+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][11+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][12+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][13+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][14+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 32;
+
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // JOIN TWO FULL ADDERS
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[10+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[9+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[8+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[7+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[6+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[5+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[4+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[3+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[2+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[0+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][11+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][12+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][13+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][14+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 44;
+
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // JOIN TWO FULL ADDERS
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[10+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[9+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[8+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[7+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[6+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[5+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[4+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[3+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[2+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[0+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][11+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][12+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][13+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][14+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 56;
+
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // JOIN TWO FULL ADDERS
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[10+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[9+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[8+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[7+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[6+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[5+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[4+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[3+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[2+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[0+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][11+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][12+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][13+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][14+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 68;
+
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // JOIN TWO FULL ADDERS
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][9+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[11+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[10+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[9+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[8+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[7+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[6+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[5+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[4+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[3+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[2+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[0+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][10+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.E, state: 0};
+      page[-1+offsetX][11+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][12+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][13+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][14+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+
+      // FULL ADDER OUT OF TWO HALF ADDERS
+      offsetX = 0;
+      offsetY = 80;
+
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.STATIC, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      offsetX += 10;
+      offsetY -= 1;
+      // First line
+      page[0+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][2+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[2+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[3+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][0+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][1+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+
+      // Second line
+      page[0+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][4+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[2+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[3+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+
+
+      // AND
+      page[4+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[5+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][2+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][2+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[6+offsetX][4+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[7+offsetX][4+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][3+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][3+offsetY] = {type: CELL_TYPE.NOT, source: DIRECTIONS.W, state: 0};
+      page[10+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[11+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][3+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      page[8+offsetX][5+offsetY] = {type: CELL_TYPE.AND, state: 0};
+      page[9+offsetX][5+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+      // OR
+      page[-1+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[-1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.N, state: 0};
+      page[0+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[1+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[2+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[3+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[4+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[5+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[6+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[7+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[8+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][8+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[9+offsetX][7+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.S, state: 0};
+      page[10+offsetX][6+offsetY] = {type: CELL_TYPE.OR, state: 0};
+      // END OF FULL ADDER
+
+      // Most significant bit
+      page[11+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[12+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[13+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[14+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+      page[15+offsetX][6+offsetY] = {type: CELL_TYPE.LINE, source: DIRECTIONS.W, state: 0};
+
+
 
       for(let x = 0; x < page.length; x++) {
         for(let y = 0; y < page.length; y++) {
